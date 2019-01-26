@@ -1,4 +1,4 @@
-import main.java.Node;
+package main.java;
 
 import java.awt.Color;
 import java.awt.Graphics;
