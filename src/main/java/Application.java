@@ -34,6 +34,8 @@ public class Application extends JFrame {
 
     public World() {
       nodes = new ArrayList<Node>();
+
+      nodes.add(new Node(400, 200));
     }
 
     @Override
@@ -42,6 +44,10 @@ public class Application extends JFrame {
 
       g.setColor(Color.WHITE);
       g.fillRect(0,0, Application.WIDTH, Application.WIDTH);
+
+      for (Node node : nodes) {
+        node.paint(g);
+      }
     }
   }
 }
