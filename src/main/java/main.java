@@ -1,9 +1,15 @@
-import de.gurkenlabs.litiengine.Game;
+import java.awt.EventQueue;
+import javax.swing.JFrame;
 
 public class main {
 
   public static void main(String[] args) {
-    Game.init();
-    Game.start();
+    EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        Application app = new Application();
+      }
+    });
   }
+
+
 }
