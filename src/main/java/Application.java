@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.util.Random;
 
 public class Application extends JFrame {
   public final static int WIDTH = 1000;
   public final static int HEIGHT = 800;
+  public final static int W_GRIDCOUNT = WIDTH/20;
+  public final static int H_GRIDCOUNT = HEIGHT/20;
+
 
   public Application() {
     initUI();
@@ -35,7 +39,9 @@ public class Application extends JFrame {
     public World() {
       nodes = new ArrayList<Node>();
 
-      nodes.add(new Node(400, 200));
+
+
+      nodegen(nodes);
     }
 
     @Override
@@ -50,4 +56,25 @@ public class Application extends JFrame {
       }
     }
   }
+
+
+  private void nodegen(List<Node> nodes){
+    for(int j = 0; j<(H_GRIDCOUNT/2)-1; j++){
+      for(int i = 0; i<=(W_GRIDCOUNT/3); i++){
+        nodes.add(new Node(10+60*i,10+40*j));
+      }
+      for(int i = 0; i<(W_GRIDCOUNT/3); i++){
+        nodes.add(new Node(40+60*i,30+40*j));
+      }
+    }
+
+    for(int i = 0; i<250 /*TEST VARIABLE*/; i++){
+      Random rand = new Random();
+      int n = rand.nextInt(nodes.size());
+      nodes.remove(n);
+    }
+
+
+  }
+
 }

@@ -9,7 +9,7 @@ import javax.swing.WindowConstants;
 
 public class Node extends JComponent {
 
-  private final static int WIDTH = 100;
+  private final static int WIDTH = 20;
 
   private int x;
   private int y;
