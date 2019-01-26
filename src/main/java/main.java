@@ -1,6 +1,9 @@
+import de.gurkenlabs.litiengine.Game;
+
 public class main {
 
   public static void main(String[] args) {
-    System.out.print("Hi");
+    Game.init();
+    Game.start();
   }
 }
