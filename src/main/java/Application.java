@@ -55,7 +55,6 @@ public class Application extends JFrame {
     }
   }
 
-
   private void nodegen(List<Node> nodes){
     for(int j = 0; j<(H_GRIDCOUNT/2)-1; j++){
       for(int i = 0; i<=(W_GRIDCOUNT/3); i++){
@@ -69,7 +68,8 @@ public class Application extends JFrame {
     for(int i = 0; i<250 /*TEST VARIABLE*/; i++){
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
-      nodes.remove(n);
+      Node node = nodes.remove(n);
+      node.kill();
     }
   }
 
