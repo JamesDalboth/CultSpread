@@ -26,6 +26,12 @@ public class Node extends JComponent {
     (this.connections).add(connection);
   }
 
+  public void kill() {
+    for (Node node : connections) {
+      Node.unlink(this, node);
+    }
+  }
+
   public void removeConnection(Node connection) {
     (this.connections).remove(connection);
   }
