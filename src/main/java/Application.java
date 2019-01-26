@@ -1,3 +1,7 @@
+package main.java;
+
+import org.w3c.dom.Node;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
