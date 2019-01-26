@@ -19,11 +19,20 @@ public class Node extends JComponent {
   public Node(int x, int y) {
     this.x = x;
     this.y = y;
-    this.connections = new ArrayList<>();
+    this.connections = new ArrayList<Node>();
   }
 
   public void addConnection(Node connection) {
     (this.connections).add(connection);
+  }
+
+  public void removeConnection(Node connection) {
+    (this.connections).remove(connection);
+  }
+
+  public static void unlink(Node n1, Node n2) {
+    n1.addConnection(n2);
+    n2.addConnection(n1);
   }
 
   public static void link(Node n1, Node n2) {
@@ -38,5 +47,9 @@ public class Node extends JComponent {
     g.setColor(Color.BLACK);
 
     g.drawArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
+
+    for (Node node : connections) {
+      g.drawLine(this.x, this.y, node.x, node.y);
+    }
   }
 }

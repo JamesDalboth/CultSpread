@@ -1,6 +1,4 @@
-package main.java;
-
-import org.w3c.dom.Node;
+import main.java.Node;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -73,8 +71,6 @@ public class Application extends JFrame {
       int n = rand.nextInt(nodes.size());
       nodes.remove(n);
     }
-
-
   }
 
 }
