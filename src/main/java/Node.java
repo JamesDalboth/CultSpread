@@ -66,7 +66,7 @@ public class Node extends JComponent {
     Node node = connections.get(i);
     node.tryConversion(this);
     if (status == Cult.BLUE) {
-      World.REWARD_TOKENS += this.rewardsRate * 0.1;
+      World.REWARD_TOKENS += this.rewardsRate * 0.05;
     }
     World.redrawLabel();
   }

@@ -45,6 +45,7 @@ public class World extends JPanel {
     // Pick random enemy pieces
     pickEnemyPiece();
     pickEnemyPiece();
+    pickEnemyPiece();
 
     this.repaint();
     mouseListener();
@@ -56,7 +57,7 @@ public class World extends JPanel {
     class myMouseListener implements MouseListener {
 
       public void mouseClicked(MouseEvent arg0) {
-        if (placedNodes < 2) {
+        if (placedNodes < 1) {
           implementPlacement(arg0, world);
         } else {
           implementMenu(arg0, world);
@@ -155,7 +156,7 @@ public class World extends JPanel {
   }
 
   private void implementPlacement(MouseEvent e, World world) {
-    if (placedNodes < 2) {
+    if (placedNodes < 1) {
       for (Node node : nodes) {
         if (node.isHit(e)) {
           if (node.getStatus() == Cult.NEUTRAL) {
@@ -172,7 +173,7 @@ public class World extends JPanel {
 
   public void placed() {
     placedNodes++;
-    if (placedNodes == 2) {
+    if (placedNodes == 1) {
       Run();
     }
   }
@@ -195,7 +196,7 @@ public class World extends JPanel {
 
         Random random = new Random();
         int n = random.nextInt(60);
-        if (n < 2) {
+        if (n < 12) {
           boolean search = true;
 
           Node node = null;
