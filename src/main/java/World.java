@@ -121,8 +121,11 @@ public class World extends JPanel {
   }
 
   //Creating all possible nodes and their connections
-  private static void nodegen(List<Node> nodes) {
+  private void nodegen(List<Node> nodes) {
+
+    ////////////////////////////////////////////////////////////////////////////
     for (int j = 0; j < (H_GRIDCOUNT / 2) - 1; j++) {
+
       //Create first node in line 1
       nodes.add(new Node(10, 10 + 40 * j));
       int last = nodes.size() - 1;
@@ -201,9 +204,35 @@ public class World extends JPanel {
 
     for (int i = 0; i < 250 /*TEST VARIABLE*/; i++) {
       Random rand = new Random();
-      System.out.println(nodes.size());
       int n = rand.nextInt(nodes.size());
       (nodes.get(n)).disableNode();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    for (int i = 0; i < 1500 /*TEST VARIABLE*/; i++) {
+      Random rand = new Random();
+      int n = rand.nextInt(nodes.size());
+      int s_con = ((nodes.get(n)).connections).size();
+      int con = rand.nextInt(s_con);
+
+      Node.disableLink2(nodes.get(n), ((nodes.get(n).connections).get(con)));
+
+      for (Node node : nodes) {
+        Boolean del = true;
+        if ((node).isAlive()) {
+          for (int s = 0; s < ((node).connections).size(); s++) {
+            if (((node).valid_connect).get(s) == true) {
+              del = false;
+            }
+          }
+        }
+        if (del) {
+          (node).disableNode();
+        }
+
+      }
+
     }
   }
 }
