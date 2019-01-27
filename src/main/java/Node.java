@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JComponent;
 
+import static java.lang.Math.abs;
+
 public class Node extends JComponent {
 
-  private final static int WIDTH = 20;
+  public final static int WIDTH = 20;
 
   private int x;
   private int y;
   private Boolean alive;
+  private int rewardTokens;
 
   protected List<Node> connections;
   protected List<Boolean> valid_connect;
@@ -35,6 +38,7 @@ public class Node extends JComponent {
     this.rewardsRate = 0;
     this.status = Color.LIGHT_GRAY;
     this.nextStatus = this.status;
+    this.rewardTokens = 500;
   }
 
   public boolean isAlive() {
@@ -106,8 +110,9 @@ public class Node extends JComponent {
 
   public void tryConversion(Node attacker) {
     double probability = ((this.infidelity) * (attacker.getCharisma())) * 100;
-    int random = (int) (Math.random() * 100 + 1);
-    if ((random > 0) && (random <= probability)) {
+    Random rand = new Random();
+    int n = rand.nextInt(100) + 1;
+    if (n <= probability) {
       this.nextStatus = attacker.getStatus();
       this.infidelity = 0.3;
       this.charisma = 0.6;
@@ -131,9 +136,6 @@ public class Node extends JComponent {
   public void paint(Graphics g) {
     super.paint(g);
 
-
-
-
     g.setColor(Color.WHITE);
     for (Node node : connections) {
       int i = connections.indexOf(node);
@@ -154,18 +156,48 @@ public class Node extends JComponent {
     this.nextStatus = nextStatus;
   }
 
-  public boolean isHit(MouseEvent e) {
-    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2 && isAlive()) {
-      if (getStatus() == Color.lightGray) {
-        this.setNextStatus(Color.BLUE);
-        this.setStatus(Color.BLUE);
-        return true;
+  public boolean attemptUpgrade(String upgrade) {
+    if (this.status == Color.BLUE) {
+      if (upgrade == "Charisma") {
+        if (rewardTokens > 250) {
+          this.charisma = this.charisma + 0.1;
+          System.out.print(this.charisma);
+          return true;
+        } else {
+          return false;
+        }
+      } else if (upgrade == "Infidelity") {
+        if (rewardTokens > 250) {
+          this.infidelity = this.infidelity - 0.3;
+          return true;
+        } else {
+          return false;
+        }
+      } else if (upgrade == "Reward Rate") {
+        if (rewardTokens > 250) {
+          this.rewardsRate = this.rewardsRate + 2;
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
       }
+    } else {
+      return false;
+    }
+  }
+
+
+  public boolean isHit(MouseEvent e) {
+    System.out.println(distance(e.getX(), e.getY(), this.x, this.y));
+    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2 && isAlive()) {
+      return true;
     }
     return false;
   }
 
-  public double distance(int x1, int y1, int x2, int y2) {
+  public static double distance(int x1, int y1, int x2, int y2) {
     return Math.sqrt(Math.pow(x1 - x2 , 2.0) + Math.pow(y1 - y2, 2.0));
   }
 }

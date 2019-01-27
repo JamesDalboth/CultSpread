@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -7,7 +8,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 public class World extends JPanel {
 
@@ -27,8 +32,85 @@ public class World extends JPanel {
     pickEnemyPiece();
 
     this.repaint();
+    mouseListener();
+  }
 
-    selectStartingPieces();
+  private void mouseListener() {
+    final World world = this;
+
+    class myMouseListener implements MouseListener {
+
+      public void mouseClicked(MouseEvent arg0) {
+        System.out.println("Click");
+        if (placedNodes < 2) {
+          System.out.println("huh");
+          implementPlacement(arg0, world);
+        } else {
+          System.out.println("has");
+          implementMenu(arg0, world);
+        }
+      }
+
+      public void mousePressed(MouseEvent e) {
+
+      }
+
+      public void mouseReleased(MouseEvent e) {
+
+      }
+
+      public void mouseEntered(MouseEvent e) {
+
+      }
+
+      public void mouseExited(MouseEvent e) {
+
+      }
+    }
+
+    myMouseListener mml = new myMouseListener();
+
+    world.addMouseListener(mml);
+  }
+
+  private void implementMenu(MouseEvent arg0, final World world) {
+    System.out.println(arg0.getX());
+    System.out.println(arg0.getY());
+    for (final Node node : nodes) {
+      if(node.isHit(arg0)) {
+        System.out.println("huge");
+        JPopupMenu selectReward;
+        selectReward = new JPopupMenu("Upgrades");
+        selectReward.add(new JMenuItem(new AbstractAction("Bless the Gifted") {
+          public void actionPerformed(ActionEvent e) {
+            if(node.attemptUpgrade("Charisma")) {
+              JOptionPane.showMessageDialog(world, "Charisma Successful");
+            } else {
+              JOptionPane.showMessageDialog(world, "More tokens needed");
+            }
+          }
+        }));
+        selectReward.add(new JMenuItem(new AbstractAction("Punish the unfaithful") {
+          public void actionPerformed(ActionEvent e) {
+            if(node.attemptUpgrade("Infidelity")) {
+              JOptionPane.showMessageDialog(world, "Infidelity Successful");
+            } else {
+              JOptionPane.showMessageDialog(world, "More tokens needed");
+            }
+          }
+        }));
+        selectReward.add(new JMenuItem(new AbstractAction("Increase the Sacrifice") {
+          public void actionPerformed(ActionEvent e) {
+            if(node.attemptUpgrade("Reward Rate")) {
+              JOptionPane.showMessageDialog(world, "Rewards rate Successful");
+            } else {
+              JOptionPane.showMessageDialog(world, "More tokens needed");
+            }
+          }
+        }));
+        selectReward.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+      }
+    }
   }
 
   private void pickEnemyPiece() {
@@ -44,39 +126,20 @@ public class World extends JPanel {
     }
   }
 
-  private void selectStartingPieces() {
-    final World world = this;
-
-    this.addMouseListener(new MouseListener() {
-      public void mouseClicked(MouseEvent e) {
-
-      }
-
-      public void mousePressed(MouseEvent e) {
-        if (placedNodes < 2) {
-          for (Node node : nodes) {
-            if (node.isHit(e)) {
-              world.placed();
-              world.repaint();
-              return;
-            }
-
+  private void implementPlacement(MouseEvent e, World world) {
+    if (placedNodes < 2) {
+      for (Node node : nodes) {
+        if (node.isHit(e)) {
+          if (node.getStatus() == Color.LIGHT_GRAY) {
+            node.setStatus(Color.BLUE);
+            node.setNextStatus(Color.BLUE);
+            world.placed();
+            world.repaint();
           }
+          return;
         }
       }
-
-      public void mouseReleased(MouseEvent e) {
-
-      }
-
-      public void mouseEntered(MouseEvent e) {
-
-      }
-
-      public void mouseExited(MouseEvent e) {
-
-      }
-    });
+    }
   }
 
   public void placed() {

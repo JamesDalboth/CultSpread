@@ -13,6 +13,7 @@ public class Application extends JFrame {
 
   public void initUI() {
     JPanel panel = new World();
+
     setContentPane(panel);
 
     setSize(WIDTH, HEIGHT);
