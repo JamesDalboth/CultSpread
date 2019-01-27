@@ -71,8 +71,6 @@ public class Application extends JFrame {
       int n = rand.nextInt(nodes.size());
       nodes.remove(n);
     }
-
-
   }
 
 }
