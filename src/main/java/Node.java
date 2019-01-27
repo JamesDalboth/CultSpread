@@ -91,16 +91,8 @@ public class Node extends JComponent {
     this.status = status;
   }
 
-  @Override
-  public void paint(Graphics g) {
+  public void paintNodes(Graphics g) {
     super.paint(g);
-
-    g.setColor(Color.WHITE);
-    for (Node node : connections) {
-      int i = connections.indexOf(node);
-      g.drawLine(this.x, this.y + World.LABEL_SPACE, node.x, node.y + World.LABEL_SPACE
-      );
-    }
 
     switch (status) {
       case RED:
@@ -109,8 +101,34 @@ public class Node extends JComponent {
       case BLUE:
         g.setColor(Color.BLUE);
         break;
+      case NEUTRAL:
+        g.setColor(Color.LIGHT_GRAY);
+        break;
     }
     g.fillArc(x - WIDTH / 2, y - WIDTH / 2 + World.LABEL_SPACE, WIDTH, WIDTH, 0, 360);
+  }
+
+  public void paintConnection(Graphics g) {
+    super.paint(g);
+
+    switch (status) {
+      case RED:
+        g.setColor(Color.RED);
+        break;
+      case BLUE:
+        g.setColor(Color.BLUE);
+        break;
+      case NEUTRAL:
+        g.setColor(Color.LIGHT_GRAY);
+        break;
+    }
+
+    for (Node node : connections) {
+      int i = connections.indexOf(node);
+      g.drawLine(this.x, this.y + World.LABEL_SPACE, (node.x - this.x) / 2 + this.x,
+          (node.y - this.y) / 2 + this.y + World.LABEL_SPACE
+      );
+    }
   }
 
   public Cult getNextStatus() {

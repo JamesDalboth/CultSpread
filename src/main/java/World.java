@@ -187,7 +187,11 @@ public class World extends JPanel {
     g.fillRect(0, 0, Application.WIDTH, Application.HEIGHT + LABEL_SPACE);
 
     for (Node node : nodes) {
-      node.paint(g);
+      node.paintConnection(g);
+    }
+
+    for (Node node : nodes) {
+      node.paintNodes(g);
     }
 
     g.setColor(Color.WHITE);
