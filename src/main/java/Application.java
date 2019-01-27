@@ -46,7 +46,7 @@ public class Application extends JFrame {
     public void paintComponent(Graphics g) {
       super.paintComponents(g);
 
-      g.setColor(Color.WHITE);
+      g.setColor(Color.BLACK);
       g.fillRect(0,0, Application.WIDTH, Application.WIDTH);
 
       for (Node node : nodes) {

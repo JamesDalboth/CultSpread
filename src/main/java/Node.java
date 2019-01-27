@@ -17,7 +17,7 @@ public class Node extends JComponent {
   private double infidelity;
   private double charisma;
   private int rewardsRate;
-  private char status;
+  private Color status;
 
 
   private List<Node> connections;
@@ -29,7 +29,7 @@ public class Node extends JComponent {
     this.infidelity = 0.5;
     this.charisma = 0.5;
     this.rewardsRate = 0;
-    this.status = 'N';
+    this.status = Color.LIGHT_GRAY;
   }
 
   public void addConnection(Node connection) {
@@ -60,7 +60,7 @@ public class Node extends JComponent {
       return this.charisma;
   }
 
-  public char getStatus() {
+  public Color getStatus() {
       return this.status;
   }
 
@@ -68,8 +68,7 @@ public class Node extends JComponent {
   public void paint(Graphics g) {
     super.paint(g);
 
-    g.setColor(Color.BLACK);
-
-    g.drawArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
+    g.setColor(status);
+    g.fillArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
   }
 }
