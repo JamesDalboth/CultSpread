@@ -65,6 +65,10 @@ public class Node extends JComponent {
     int i = random.nextInt(connections.size());
     Node node = connections.get(i);
     node.tryConversion(this);
+    if (status == Cult.BLUE) {
+      World.REWARD_TOKENS += this.rewardsRate;
+    }
+    World.redrawLabel();
   }
 
   public void tryConversion(Node attacker) {
