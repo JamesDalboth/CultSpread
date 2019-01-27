@@ -1,3 +1,5 @@
+package main.java;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -90,8 +92,6 @@ public class Application extends JFrame {
       int n = rand.nextInt(nodes.size());
       (nodes.get(n)).disableNode();
     }
-
-
   }
 
 }
