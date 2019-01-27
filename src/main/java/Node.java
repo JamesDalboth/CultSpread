@@ -1,10 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JComponent;
-import javax.swing.WindowConstants;
 
 public class Node extends JComponent {
 
@@ -78,8 +78,7 @@ public class Node extends JComponent {
 
     //Delete connection if both nodes have more than 1 connection
     if(s>1 && r>1){
-      n1.removeConnection(n2);
-      n2.removeConnection(n1);
+      disableLink(n1, n2);
     }
 
   }
@@ -96,7 +95,7 @@ public class Node extends JComponent {
     Random random = new Random();
     int i = random.nextInt(connections.size());
     Node node = connections.get(i);
-    if (node.isAlive()) {
+    if (node.isAlive() && valid_connect.get(i)) {
       node.tryConversion(this);
     }
   }
@@ -132,8 +131,8 @@ public class Node extends JComponent {
   public void paint(Graphics g) {
     super.paint(g);
 
-    g.setColor(status);
-    g.fillArc(x - WIDTH / 2, y - WIDTH / 2, WIDTH, WIDTH, 0, 360);
+
+
 
     g.setColor(Color.WHITE);
     for (Node node : connections) {
@@ -142,6 +141,9 @@ public class Node extends JComponent {
         g.drawLine(this.x, this.y, node.x, node.y);
       }
     }
+
+    g.setColor(status);
+    g.fillArc(x - WIDTH / 2, y - WIDTH / 2, WIDTH, WIDTH, 0, 360);
   }
 
   public Color getNextStatus() {
@@ -150,5 +152,20 @@ public class Node extends JComponent {
 
   public void setNextStatus(Color nextStatus) {
     this.nextStatus = nextStatus;
+  }
+
+  public boolean isHit(MouseEvent e) {
+    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2 && isAlive()) {
+      if (getStatus() == Color.lightGray) {
+        this.setNextStatus(Color.BLUE);
+        this.setStatus(Color.BLUE);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public double distance(int x1, int y1, int x2, int y2) {
+    return Math.sqrt(Math.pow(x1 - x2 , 2.0) + Math.pow(y1 - y2, 2.0));
   }
 }
