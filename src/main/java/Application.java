@@ -55,6 +55,8 @@ public class Application extends JFrame {
 
   //Creating all possible nodes and their connections
   private void nodegen(List<Node> nodes){
+
+    ////////////////////////////////////////////////////////////////////////////
     for(int j = 0; j<(H_GRIDCOUNT/2)-1; j++){
 
       //Create first node in line 1
@@ -141,6 +143,35 @@ public class Application extends JFrame {
       int n = rand.nextInt(nodes.size());
       (nodes.get(n)).disableNode();
     }
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    for(int i = 0; i<1500 /*TEST VARIABLE*/; i++){
+      Random rand = new Random();
+      int n = rand.nextInt(nodes.size());
+      int s_con = ((nodes.get(n)).connections).size();
+      int con = rand.nextInt(s_con);
+
+      Node.disableLink2(nodes.get(n), ((nodes.get(n).connections).get(con)));
+
+      for(int r = 0; r<nodes.size(); r++){
+        Boolean del = true;
+        if((nodes.get(r)).isAlive()){
+          for(int s = 0; s<((nodes.get(r)).connections).size();s++){
+            if(((nodes.get(r)).valid_connect).get(s)==true){
+              del = false;
+            }
+          }
+        }
+        if(del){
+          (nodes.get(r)).disableNode();
+        }
+
+      }
+
+    }
+
+
   }
 
 }
