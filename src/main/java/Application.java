@@ -1,15 +1,17 @@
 package main.java;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import main.java.Node;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.util.Random;
 
 public class Application extends JFrame {
@@ -27,6 +29,7 @@ public class Application extends JFrame {
 
   public void initUI() {
     JPanel panel = new World();
+
     setContentPane(panel);
 
     setSize(WIDTH, HEIGHT);
@@ -38,7 +41,8 @@ public class Application extends JFrame {
   private class World extends JPanel {
     List<Node> nodes;
 
-    public World() {
+      public World() {
+
       nodes = new ArrayList<Node>();
 
       nodegen(nodes);
@@ -72,7 +76,72 @@ public class Application extends JFrame {
 
       final World world = this;
 
-      time.scheduleAtFixedRate(new TimerTask() {
+        class myMouseListener implements MouseListener {
+
+          @Override
+          public void mouseClicked(MouseEvent arg0) {
+            for (Node node : nodes) {
+              if(node.distance(arg0.getX(), arg0.getY()) && node.isAlive()) {
+                JPopupMenu selectReward;
+                selectReward = new JPopupMenu("Upgrades");
+                selectReward.add(new JMenuItem(new AbstractAction("Bless the Gifted") {
+                  public void actionPerformed(ActionEvent e) {
+                    if(node.attemptUpgrade("Charisma")) {
+                      JOptionPane.showMessageDialog(world, "Charisma Successful");
+                    } else {
+                      JOptionPane.showMessageDialog(world, "More tokens needed");
+                    }
+                  }
+                }));
+                selectReward.add(new JMenuItem(new AbstractAction("Punish the unfaithful") {
+                  public void actionPerformed(ActionEvent e) {
+                    if(node.attemptUpgrade("Infidelity")) {
+                      JOptionPane.showMessageDialog(world, "Infidelity Successful");
+                    } else {
+                      JOptionPane.showMessageDialog(world, "More tokens needed");
+                    }
+                  }
+                }));
+                selectReward.add(new JMenuItem(new AbstractAction("Increase the Sacrifice") {
+                  public void actionPerformed(ActionEvent e) {
+                    if(node.attemptUpgrade("Reward Rate")) {
+                      JOptionPane.showMessageDialog(world, "Rewards rate Successful");
+                    } else {
+                      JOptionPane.showMessageDialog(world, "More tokens needed");
+                    }
+                  }
+                }));
+                selectReward.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+              }
+            }
+          }
+
+          @Override
+          public void mousePressed(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseReleased(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseEntered(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+
+          }
+        }
+
+        myMouseListener mml = new myMouseListener();
+
+        world.addMouseListener(mml);
+
+        time.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
 

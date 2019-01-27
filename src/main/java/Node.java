@@ -1,3 +1,5 @@
+package main.java;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -6,6 +8,8 @@ import java.util.Random;
 import javax.swing.JComponent;
 import javax.swing.WindowConstants;
 
+import static java.lang.Math.abs;
+
 public class Node extends JComponent {
 
   private final static int WIDTH = 20;
@@ -13,6 +17,7 @@ public class Node extends JComponent {
   private int x;
   private int y;
   private Boolean alive;
+  private int rewardTokens;
 
   protected List<Node> connections;
   protected List<Boolean> valid_connect;
@@ -35,6 +40,7 @@ public class Node extends JComponent {
     this.rewardsRate = 0;
     this.status = Color.LIGHT_GRAY;
     this.nextStatus = this.status;
+    this.rewardTokens = 500;
   }
 
   public boolean isAlive() {
@@ -83,8 +89,9 @@ public class Node extends JComponent {
 
   public void tryConversion(Node attacker) {
     double probability = ((this.infidelity) * (attacker.getCharisma())) * 100;
-    int random = (int) (Math.random() * 100 + 1);
-    if ((random > 0) && (random <= probability)) {
+    Random rand = new Random();
+    int n = rand.nextInt(100) + 1;
+    if (n <= probability) {
       this.nextStatus = attacker.getStatus();
       this.infidelity = 0.3;
       this.charisma = 0.6;
@@ -126,5 +133,45 @@ public class Node extends JComponent {
 
   public void setNextStatus(Color nextStatus) {
     this.nextStatus = nextStatus;
+  }
+
+  public boolean distance(int mouseX, int mouseY) {
+    if((abs(mouseX - this.x) < WIDTH/2) && (abs(mouseY - this.y) < WIDTH/2)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean attemptUpgrade(String upgrade) {
+    if (this.status == Color.BLUE) {
+      if (upgrade == "Charisma") {
+        if (rewardTokens > 250) {
+          this.charisma = this.charisma + 0.1;
+          System.out.print(this.charisma);
+          return true;
+        } else {
+          return false;
+        }
+      } else if (upgrade == "Infidelity") {
+        if (rewardTokens > 250) {
+          this.infidelity = this.infidelity - 0.3;
+          return true;
+        } else {
+          return false;
+        }
+      } else if (upgrade == "Reward Rate") {
+        if (rewardTokens > 250) {
+          this.rewardsRate = this.rewardsRate + 2;
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }
