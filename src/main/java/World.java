@@ -21,7 +21,7 @@ public class World extends JPanel {
   public static final int SPARSENESS = 300;
   public static final int NODE_SPARESNESS = 200;
   public static final int LABEL_SPACE = 100;
-  public static int REWARD_TOKENS = 500;
+  public static double REWARD_TOKENS = 500;
 
   public static JLabel label;
 
@@ -113,6 +113,24 @@ public class World extends JPanel {
           public void actionPerformed(ActionEvent e) {
             if(node.attemptUpgrade("Reward Rate")) {
               JOptionPane.showMessageDialog(world, "Rewards rate Successful");
+            } else {
+              JOptionPane.showMessageDialog(world, "More tokens needed");
+            }
+          }
+        }));
+        selectReward.add(new JMenuItem(new AbstractAction("Holy hand grenade (200)") {
+          public void actionPerformed(ActionEvent e) {
+            if(node.attemptUpgrade("bomb")) {
+              JOptionPane.showMessageDialog(world, "Holy hand grenade Successful");
+            } else {
+              JOptionPane.showMessageDialog(world, "More tokens needed");
+            }
+          }
+        }));
+        selectReward.add(new JMenuItem(new AbstractAction("Matyr (-300)") {
+          public void actionPerformed(ActionEvent e) {
+            if(node.attemptUpgrade("matyr")) {
+              JOptionPane.showMessageDialog(world, "Matyr Successful");
             } else {
               JOptionPane.showMessageDialog(world, "More tokens needed");
             }
@@ -305,6 +323,6 @@ public class World extends JPanel {
   }
 
   public static void redrawLabel() {
-    label.setText("Reward Tokens = " + REWARD_TOKENS);
+    label.setText("Reward Tokens = " + Math.round(REWARD_TOKENS));
   }
 }

@@ -66,7 +66,7 @@ public class Node extends JComponent {
     Node node = connections.get(i);
     node.tryConversion(this);
     if (status == Cult.BLUE) {
-      World.REWARD_TOKENS += this.rewardsRate;
+      World.REWARD_TOKENS += this.rewardsRate * 0.1;
     }
     World.redrawLabel();
   }
@@ -172,6 +172,20 @@ public class Node extends JComponent {
         } else {
           return false;
         }
+      } else if (upgrade == "bomb") {
+        if (World.REWARD_TOKENS >= 200) {
+          bomb();
+          World.REWARD_TOKENS -= 200;
+          World.redrawLabel();
+          return true;
+        } else {
+          return false;
+        }
+      } else if (upgrade == "matyr") {
+        matyr();
+        World.REWARD_TOKENS += 300;
+        World.redrawLabel();
+        return true;
       } else {
         return false;
       }
@@ -180,7 +194,20 @@ public class Node extends JComponent {
     }
   }
 
+  private void matyr() {
+    this.setNextStatus(Cult.RED);
+    for (Node node : connections) {
+      node.setNextStatus(Cult.RED);
+      node.setStatus(Cult.RED);
+    }
+  }
 
+  public void bomb() {
+    for (Node node : connections) {
+      node.setNextStatus(getStatus());
+      node.setStatus(getStatus());
+    }
+  }
 
   public void kill() {
     Node node;
