@@ -37,8 +37,6 @@ public class Application extends JFrame {
     public World() {
       nodes = new ArrayList<Node>();
 
-
-
       nodegen(nodes);
     }
 
@@ -50,26 +48,49 @@ public class Application extends JFrame {
       g.fillRect(0,0, Application.WIDTH, Application.WIDTH);
 
       for (Node node : nodes) {
-        node.paint(g);
+        if(node.isAlive()) {
+          node.paint(g);
+        }
       }
     }
   }
 
-
+  //Creating all possible nodes and their connections
   private void nodegen(List<Node> nodes){
     for(int j = 0; j<(H_GRIDCOUNT/2)-1; j++){
       for(int i = 0; i<=(W_GRIDCOUNT/3); i++){
         nodes.add(new Node(10+60*i,10+40*j));
+        int last = nodes.size()-1;
+        if(last-1>=0) {
+          Node.link(nodes.get(last), nodes.get(last - 1));
+          if(last-16>=0) {
+            Node.link(nodes.get(last), nodes.get(last - 16));
+            if (last - 17 >= 0) {
+              Node.link(nodes.get(last), nodes.get(last - 17));
+            }
+          }
+        }
       }
       for(int i = 0; i<(W_GRIDCOUNT/3); i++){
         nodes.add(new Node(40+60*i,30+40*j));
+        int last = nodes.size()-1;
+        if(last-1>=0) {
+          Node.link(nodes.get(last), nodes.get(last - 1));
+          if(last-16>=0) {
+            Node.link(nodes.get(last), nodes.get(last - 16));
+            if (last - 17 >= 0) {
+              Node.link(nodes.get(last), nodes.get(last - 17));
+            }
+          }
+        }
       }
+
     }
 
     for(int i = 0; i<250 /*TEST VARIABLE*/; i++){
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
-      nodes.remove(n);
+      (nodes.get(n)).disableNode();
     }
   }
 
