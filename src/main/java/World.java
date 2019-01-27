@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.AbstractAction;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,11 +20,24 @@ public class World extends JPanel {
   public final static int H_GRIDCOUNT = Application.HEIGHT / 20;
   public static final int SPARSENESS = 300;
   public static final int NODE_SPARESNESS = 200;
+  public static final int LABEL_SPACE = 100;
+  public static int REWARD_TOKENS = 500;
+
+  public static JLabel label;
 
   List<Node> nodes;
   static int placedNodes = 0;
 
   public World() {
+
+    label = new JLabel();
+    label.setText("Reward tokens = " + REWARD_TOKENS);
+    label.setForeground(Color.WHITE);
+
+    add(label);
+
+    repaint();
+
     nodes = new ArrayList<Node>();
 
     nodegen(nodes);
@@ -77,7 +91,7 @@ public class World extends JPanel {
       if(node.isHit(e)) {
         JPopupMenu selectReward;
         selectReward = new JPopupMenu("Upgrades");
-        selectReward.add(new JMenuItem(new AbstractAction("Bless the Gifted") {
+        selectReward.add(new JMenuItem(new AbstractAction("Bless the Gifted (50)") {
           public void actionPerformed(ActionEvent e) {
             if(node.attemptUpgrade("Charisma")) {
               JOptionPane.showMessageDialog(world, "Charisma Successful");
@@ -86,7 +100,7 @@ public class World extends JPanel {
             }
           }
         }));
-        selectReward.add(new JMenuItem(new AbstractAction("Punish the unfaithful") {
+        selectReward.add(new JMenuItem(new AbstractAction("Punish the unfaithful (50)") {
           public void actionPerformed(ActionEvent e) {
             if(node.attemptUpgrade("Infidelity")) {
               JOptionPane.showMessageDialog(world, "Infidelity Successful");
@@ -95,7 +109,7 @@ public class World extends JPanel {
             }
           }
         }));
-        selectReward.add(new JMenuItem(new AbstractAction("Increase the Sacrifice") {
+        selectReward.add(new JMenuItem(new AbstractAction("Increase the Sacrifice (50)") {
           public void actionPerformed(ActionEvent e) {
             if(node.attemptUpgrade("Reward Rate")) {
               JOptionPane.showMessageDialog(world, "Rewards rate Successful");
@@ -170,11 +184,15 @@ public class World extends JPanel {
     super.paintComponents(g);
 
     g.setColor(Color.BLACK);
-    g.fillRect(0, 0, Application.WIDTH, Application.WIDTH);
+    g.fillRect(0, 0, Application.WIDTH, Application.HEIGHT + LABEL_SPACE);
 
     for (Node node : nodes) {
       node.paint(g);
     }
+
+    g.setColor(Color.WHITE);
+
+    label.repaint();
   }
 
   //Creating all possible nodes and their connections
@@ -273,9 +291,16 @@ public class World extends JPanel {
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
       int s_con = ((nodes.get(n)).connections).size();
+      if (s_con == 0) {
+        break;
+      }
       int con = rand.nextInt(s_con);
 
       Node.disableLink(nodes.get(n), ((nodes.get(n).connections).get(con)));
     }
+  }
+
+  public static void redrawLabel() {
+    label.setText("Reward Tokens = " + REWARD_TOKENS);
   }
 }

@@ -12,7 +12,7 @@ public class Node extends JComponent {
 
   private int x;
   private int y;
-  private int rewardTokens;
+
 
   protected List<Node> connections;
 
@@ -33,7 +33,6 @@ public class Node extends JComponent {
     this.rewardsRate = 0;
     this.status = Cult.NEUTRAL;
     this.nextStatus = this.status;
-    this.rewardTokens = 500;
   }
 
   public void addConnection(Node connection) {
@@ -99,7 +98,8 @@ public class Node extends JComponent {
     g.setColor(Color.WHITE);
     for (Node node : connections) {
       int i = connections.indexOf(node);
-      g.drawLine(this.x, this.y, node.x, node.y);
+      g.drawLine(this.x, this.y + World.LABEL_SPACE, node.x, node.y + World.LABEL_SPACE
+      );
     }
 
     switch (status) {
@@ -110,7 +110,7 @@ public class Node extends JComponent {
         g.setColor(Color.BLUE);
         break;
     }
-    g.fillArc(x - WIDTH / 2, y - WIDTH / 2, WIDTH, WIDTH, 0, 360);
+    g.fillArc(x - WIDTH / 2, y - WIDTH / 2 + World.LABEL_SPACE, WIDTH, WIDTH, 0, 360);
   }
 
   public Cult getNextStatus() {
@@ -124,23 +124,28 @@ public class Node extends JComponent {
   public boolean attemptUpgrade(String upgrade) {
     if (this.status == Cult.BLUE) {
       if (upgrade == "Charisma") {
-        if (rewardTokens > 250) {
+        if (World.REWARD_TOKENS >= 50) {
           this.charisma = this.charisma + 0.1;
-          System.out.print(this.charisma);
+          World.REWARD_TOKENS -= 50;
+          World.redrawLabel();
           return true;
         } else {
           return false;
         }
       } else if (upgrade == "Infidelity") {
-        if (rewardTokens > 250) {
+        if (World.REWARD_TOKENS >= 50) {
           this.infidelity = this.infidelity - 0.3;
+          World.REWARD_TOKENS -= 50;
+          World.redrawLabel();
           return true;
         } else {
           return false;
         }
       } else if (upgrade == "Reward Rate") {
-        if (rewardTokens > 250) {
+        if (World.REWARD_TOKENS >= 50) {
           this.rewardsRate = this.rewardsRate + 2;
+          World.REWARD_TOKENS -= 50;
+          World.redrawLabel();
           return true;
         } else {
           return false;
@@ -153,6 +158,8 @@ public class Node extends JComponent {
     }
   }
 
+
+
   public void kill() {
     Node node;
     while (connections.size() > 0) {
@@ -162,7 +169,7 @@ public class Node extends JComponent {
   }
 
   public boolean isHit(MouseEvent e) {
-    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2) {
+    if (distance(e.getX(), e.getY(), this.x, this.y + World.LABEL_SPACE) < WIDTH/2) {
       return true;
     }
     return false;

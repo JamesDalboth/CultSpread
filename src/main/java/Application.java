@@ -16,7 +16,7 @@ public class Application extends JFrame {
 
     setContentPane(panel);
 
-    setSize(WIDTH, HEIGHT);
+    setSize(WIDTH, HEIGHT + World.LABEL_SPACE);
     setTitle("Cultio");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLocationRelativeTo(null);
