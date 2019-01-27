@@ -1,7 +1,3 @@
-package main.java;
-
-import main.java.Application;
-
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
