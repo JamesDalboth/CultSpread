@@ -68,8 +68,8 @@ public class Application extends JFrame {
           }
         }
       }
-      //Create the rest of the nodes in the rest of the lines
-      for(int i = 1; i<=(W_GRIDCOUNT/3); i++){
+      //Create the middle of the nodes in the rest of the lines
+      for(int i = 1; i<(W_GRIDCOUNT/3); i++){
         nodes.add(new Node(10+60*i,10+40*j));
         last = nodes.size()-1;
         if(last-1>=0) {
@@ -85,6 +85,20 @@ public class Application extends JFrame {
           }
         }
       }
+
+      //Create the last node in Line 1
+      nodes.add(new Node(10+60*(W_GRIDCOUNT/3),10+40*j));
+      last = nodes.size()-1;
+      if(last-1>=0) {
+        Node.link(nodes.get(last), nodes.get(last - 1));
+        if (last - 17 >= 0) {
+          Node.link(nodes.get(last), nodes.get(last - 17));
+          if (last - 33 >= 0) {
+            Node.link(nodes.get(last), nodes.get(last - 33));
+          }
+        }
+      }
+
 
       //Create first node in line 2
       nodes.add(new Node(40,30+40*j));
