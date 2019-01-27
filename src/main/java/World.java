@@ -192,6 +192,28 @@ public class World extends JPanel {
         for (Node node : nodes) {
           node.setStatus(node.getNextStatus());
         }
+
+        Random random = new Random();
+        int n = random.nextInt(60);
+        if (n < 2) {
+          boolean search = true;
+
+          Node node = null;
+
+          while (search) {
+            int i = random.nextInt(nodes.size());
+            if (nodes.get(i).getStatus() == Cult.RED) {
+              node = nodes.get(i);
+              search = false;
+            }
+          }
+
+          if (node.getStatus() == Cult.RED) {
+            node.bomb();
+          }
+        }
+
+
         world.repaint();
       }
     }, 1000, 1000);
