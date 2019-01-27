@@ -1,5 +1,3 @@
-package main.java;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -32,7 +30,6 @@ public class Node extends JComponent {
     this.connections = new ArrayList<Node>();
     this.valid_connect = new ArrayList<Boolean>();
 
-    this.connections = new ArrayList<Node>();
     this.infidelity = 0.5;
     this.charisma = 0.5;
     this.rewardsRate = 0;
