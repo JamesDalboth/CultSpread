@@ -21,7 +21,7 @@ public class Node extends JComponent {
   private double charisma;
   private int rewardsRate;
   private Color status;
-  
+
   public Node(int x, int y) {
     this.x = x;
     this.y = y;
@@ -47,24 +47,8 @@ public class Node extends JComponent {
   }
 
   public void removeConnection(Node connection) {
-    int i;
-    for(i = 0; (this.connections).get(i)!=connection; i++){ }
-    if(i==this.connections.size()){
-      System.out.println("Somethings gone wrong ;(");
-    }
+    int i = connections.indexOf(connection);
     (this.valid_connect).set(i, false);
-  }
-
-  public void kill() {
-    for (Node node : connections) {
-      Node.unlink(this, node);
-    }
-  }
-
-
-  public static void unlink(Node n1, Node n2) {
-    n1.addConnection(n2);
-    n2.addConnection(n1);
   }
 
   public static void link(Node n1, Node n2) {
@@ -78,10 +62,10 @@ public class Node extends JComponent {
   }
 
   public void disableNode() {
-      this.alive = false;
-      for (int i = 0; i < (this.connections).size(); i++) {
-          disableLink(this, connections.get(i));
-      }
+    this.alive = false;
+    for (int i = 0; i < (this.connections).size(); i++) {
+      Node.disableLink(this, connections.get(i));
+    }
   }
 
   public static void convert(Node n1, Node n2) {
@@ -112,11 +96,15 @@ public class Node extends JComponent {
     super.paint(g);
 
     g.setColor(status);
-
     g.fillArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
+      for (Node node : connections) {
+        int i = connections.indexOf(node);
+        if (this.valid_connect.get(i)) {
+          g.drawLine(this.x, this.y, node.x, node.y);
+        }
+      }
 
     for (Node node : connections) {
       g.drawLine(this.x, this.y, node.x, node.y);
     }
-  }
 }

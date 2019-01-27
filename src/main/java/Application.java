@@ -60,22 +60,70 @@ public class Application extends JFrame {
   //Creating all possible nodes and their connections
   private void nodegen(List<Node> nodes){
     for(int j = 0; j<(H_GRIDCOUNT/2)-1; j++){
-      for(int i = 0; i<=(W_GRIDCOUNT/3); i++){
+
+      //Create first node in line 1
+      nodes.add(new Node(10,10+40*j));
+      int last = nodes.size()-1;
+      if(last-1>=0) {
+        if(last-16>=0) {
+          Node.link(nodes.get(last), nodes.get(last - 16));
+          if (last - 33 >= 0) {
+            Node.link(nodes.get(last), nodes.get(last - 33));
+          }
+        }
+      }
+      //Create the middle of the nodes in the rest of the lines
+      for(int i = 1; i<(W_GRIDCOUNT/3); i++){
         nodes.add(new Node(10+60*i,10+40*j));
-        int last = nodes.size()-1;
+        last = nodes.size()-1;
         if(last-1>=0) {
           Node.link(nodes.get(last), nodes.get(last - 1));
           if(last-16>=0) {
             Node.link(nodes.get(last), nodes.get(last - 16));
             if (last - 17 >= 0) {
               Node.link(nodes.get(last), nodes.get(last - 17));
+              if (last - 33 >= 0) {
+                Node.link(nodes.get(last), nodes.get(last - 33));
+              }
             }
           }
         }
       }
-      for(int i = 0; i<(W_GRIDCOUNT/3); i++){
+
+      //Create the last node in Line 1
+      nodes.add(new Node(10+60*(W_GRIDCOUNT/3),10+40*j));
+      last = nodes.size()-1;
+      if(last-1>=0) {
+        Node.link(nodes.get(last), nodes.get(last - 1));
+        if (last - 17 >= 0) {
+          Node.link(nodes.get(last), nodes.get(last - 17));
+          if (last - 33 >= 0) {
+            Node.link(nodes.get(last), nodes.get(last - 33));
+          }
+        }
+      }
+
+
+      //Create first node in line 2
+      nodes.add(new Node(40,30+40*j));
+      last = nodes.size()-1;
+      if(last-1>=0) {
+        if(last-16>=0) {
+          Node.link(nodes.get(last), nodes.get(last - 16));
+          if (last - 17 >= 0) {
+            Node.link(nodes.get(last), nodes.get(last - 17));
+            if (last - 33 >= 0) {
+              Node.link(nodes.get(last), nodes.get(last - 33));
+            }
+          }
+        }
+      }
+
+
+
+      for(int i = 1; i<(W_GRIDCOUNT/3); i++){
         nodes.add(new Node(40+60*i,30+40*j));
-        int last = nodes.size()-1;
+        last = nodes.size()-1;
         if(last-1>=0) {
           Node.link(nodes.get(last), nodes.get(last - 1));
           if(last-16>=0) {
@@ -95,7 +143,7 @@ public class Application extends JFrame {
     for(int i = 0; i<250 /*TEST VARIABLE*/; i++){
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
-      //(nodes.get(n)).disableNode();
+      (nodes.get(n)).disableNode();
     }
   }
 
