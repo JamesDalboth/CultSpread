@@ -6,19 +6,16 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JComponent;
 
-import static java.lang.Math.abs;
-
 public class Node extends JComponent {
 
   public final static int WIDTH = 20;
 
   private int x;
   private int y;
-  private Boolean alive;
   private int rewardTokens;
 
   protected List<Node> connections;
-  protected List<Boolean> valid_connect;
+
   private double infidelity;
   private double charisma;
   private int rewardsRate;
@@ -28,10 +25,8 @@ public class Node extends JComponent {
   public Node(int x, int y) {
     this.x = x;
     this.y = y;
-    this.alive = true;
 
     this.connections = new ArrayList<Node>();
-    this.valid_connect = new ArrayList<Boolean>();
 
     this.infidelity = 0.5;
     this.charisma = 0.5;
@@ -41,18 +36,12 @@ public class Node extends JComponent {
     this.rewardTokens = 500;
   }
 
-  public boolean isAlive() {
-    return this.alive;
-  }
-
   public void addConnection(Node connection) {
-    (this.connections).add(connection);
-    (this.valid_connect).add(true);
+    connections.add(connection);
   }
 
   public void removeConnection(Node connection) {
-    int i = connections.indexOf(connection);
-    (this.valid_connect).set(i, false);
+    connections.remove(connection);
   }
 
   public static void link(Node n1, Node n2) {
@@ -61,51 +50,22 @@ public class Node extends JComponent {
   }
 
   public static void disableLink(Node n1, Node n2) {
+    //Delete connection if both nodes have more than 1 connection
+    if(n1.connections.size() > 1 && n2.connections.size() > 1) {
+      removeLink(n1, n2);
+    }
+  }
+
+  private static void removeLink(Node n1, Node n2) {
     n1.removeConnection(n2);
     n2.removeConnection(n1);
-  }
-
-  public static void disableLink2(Node n1, Node n2) {
-    //Count how many connections
-    int r = 0;
-    int s = 0;
-    for(int i = 0; i<(n1.connections).size(); i++){
-      if((n1.valid_connect).get(i)==true){
-        s++;
-      }
-    }
-    for(int i = 0; i<(n2.connections).size(); i++){
-      if((n2.valid_connect).get(i)==true){
-        r++;
-      }
-    }
-
-    //Delete connection if both nodes have more than 1 connection
-    if(s>1 && r>1){
-      disableLink(n1, n2);
-    }
-
-  }
-
-
-  public void disableNode() {
-    this.alive = false;
-    for (int i = 0; i < (this.connections).size(); i++) {
-      Node.disableLink(this, connections.get(i));
-    }
   }
 
   public void startConverting() {
     Random random = new Random();
     int i = random.nextInt(connections.size());
     Node node = connections.get(i);
-    if (node.isAlive() && valid_connect.get(i)) {
-      node.tryConversion(this);
-    }
-  }
-
-  public static void convert(Node n1, Node n2) {
-    n2.tryConversion(n1);
+    node.tryConversion(this);
   }
 
   public void tryConversion(Node attacker) {
@@ -139,9 +99,7 @@ public class Node extends JComponent {
     g.setColor(Color.WHITE);
     for (Node node : connections) {
       int i = connections.indexOf(node);
-      if (this.valid_connect.get(i)) {
-        g.drawLine(this.x, this.y, node.x, node.y);
-      }
+      g.drawLine(this.x, this.y, node.x, node.y);
     }
 
     g.setColor(status);
@@ -188,10 +146,16 @@ public class Node extends JComponent {
     }
   }
 
+  public void kill() {
+    Node node;
+    while (connections.size() > 0) {
+      node = connections.remove(0);
+      Node.removeLink(this, node);
+    }
+  }
 
   public boolean isHit(MouseEvent e) {
-    System.out.println(distance(e.getX(), e.getY(), this.x, this.y));
-    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2 && isAlive()) {
+    if (distance(e.getX(), e.getY(), this.x, this.y) < WIDTH/2) {
       return true;
     }
     return false;
