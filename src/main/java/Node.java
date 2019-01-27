@@ -61,6 +61,30 @@ public class Node extends JComponent {
     n2.removeConnection(n1);
   }
 
+  public static void disableLink2(Node n1, Node n2) {
+    //Count how many connections
+    int r = 0;
+    int s = 0;
+    for(int i = 0; i<(n1.connections).size(); i++){
+      if((n1.valid_connect).get(i)==true){
+        s++;
+      }
+    }
+    for(int i = 0; i<(n2.connections).size(); i++){
+      if((n2.valid_connect).get(i)==true){
+        r++;
+      }
+    }
+
+    //Delete connection if both nodes have more than 1 connection
+    if(s>1 && r>1){
+      n1.removeConnection(n2);
+      n2.removeConnection(n1);
+    }
+
+  }
+
+
   public void disableNode() {
     this.alive = false;
     for (int i = 0; i < (this.connections).size(); i++) {
