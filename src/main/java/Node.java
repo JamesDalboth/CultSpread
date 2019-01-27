@@ -1,3 +1,5 @@
+package main.java;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class Node extends JComponent {
   private double infidelity;
   private double charisma;
   private int rewardsRate;
-  private char status;
+  private Color status;
 
   public Node(int x, int y) {
     this.x = x;
@@ -27,11 +29,12 @@ public class Node extends JComponent {
 
     this.connections = new ArrayList<Node>();
     this.valid_connect = new ArrayList<Boolean>();
-   
+
+    this.connections = new ArrayList<>();
     this.infidelity = 0.5;
     this.charisma = 0.5;
     this.rewardsRate = 0;
-    this.status = 'N';
+    this.status = Color.LIGHT_GRAY;
   }
 
   public boolean isAlive(){
@@ -84,7 +87,7 @@ public class Node extends JComponent {
       return this.charisma;
   }
 
-  public char getStatus() {
+  public Color getStatus() {
       return this.status;
   }
 
@@ -92,14 +95,16 @@ public class Node extends JComponent {
   public void paint(Graphics g) {
     super.paint(g);
 
-    g.setColor(Color.BLACK);
-
-    g.drawArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
+    g.setColor(status);
+    g.fillArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
       for (Node node : connections) {
         int i = connections.indexOf(node);
         if (this.valid_connect.get(i)) {
           g.drawLine(this.x, this.y, node.x, node.y);
         }
       }
+
+    for (Node node : connections) {
+      g.drawLine(this.x, this.y, node.x, node.y);
     }
 }
