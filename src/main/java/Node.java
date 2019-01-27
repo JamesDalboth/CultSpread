@@ -19,8 +19,8 @@ public class Node extends JComponent {
   private double infidelity;
   private double charisma;
   private int rewardsRate;
-  private Color status;
-  private Color nextStatus;
+  private Cult status;
+  private Cult nextStatus;
 
   public Node(int x, int y) {
     this.x = x;
@@ -31,7 +31,7 @@ public class Node extends JComponent {
     this.infidelity = 0.5;
     this.charisma = 0.5;
     this.rewardsRate = 0;
-    this.status = Color.LIGHT_GRAY;
+    this.status = Cult.NEUTRAL;
     this.nextStatus = this.status;
     this.rewardTokens = 500;
   }
@@ -84,11 +84,11 @@ public class Node extends JComponent {
     return this.charisma;
   }
 
-  public Color getStatus() {
+  public Cult getStatus() {
     return this.status;
   }
 
-  public void setStatus(Color status) {
+  public void setStatus(Cult status) {
     this.status = status;
   }
 
@@ -102,20 +102,27 @@ public class Node extends JComponent {
       g.drawLine(this.x, this.y, node.x, node.y);
     }
 
-    g.setColor(status);
+    switch (status) {
+      case RED:
+        g.setColor(Color.RED);
+        break;
+      case BLUE:
+        g.setColor(Color.BLUE);
+        break;
+    }
     g.fillArc(x - WIDTH / 2, y - WIDTH / 2, WIDTH, WIDTH, 0, 360);
   }
 
-  public Color getNextStatus() {
+  public Cult getNextStatus() {
     return nextStatus;
   }
 
-  public void setNextStatus(Color nextStatus) {
+  public void setNextStatus(Cult nextStatus) {
     this.nextStatus = nextStatus;
   }
 
   public boolean attemptUpgrade(String upgrade) {
-    if (this.status == Color.BLUE) {
+    if (this.status == Cult.BLUE) {
       if (upgrade == "Charisma") {
         if (rewardTokens > 250) {
           this.charisma = this.charisma + 0.1;

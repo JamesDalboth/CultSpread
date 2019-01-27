@@ -114,9 +114,9 @@ public class World extends JPanel {
     while (search) {
       Random random = new Random();
       int i = random.nextInt(nodes.size());
-      if (nodes.get(i).getStatus() == Color.LIGHT_GRAY) {
-        nodes.get(i).setNextStatus(Color.RED);
-        nodes.get(i).setStatus(Color.RED);
+      if (nodes.get(i).getStatus() == Cult.NEUTRAL) {
+        nodes.get(i).setNextStatus(Cult.RED);
+        nodes.get(i).setStatus(Cult.RED);
         search = false;
       }
     }
@@ -126,9 +126,9 @@ public class World extends JPanel {
     if (placedNodes < 2) {
       for (Node node : nodes) {
         if (node.isHit(e)) {
-          if (node.getStatus() == Color.LIGHT_GRAY) {
-            node.setStatus(Color.BLUE);
-            node.setNextStatus(Color.BLUE);
+          if (node.getStatus() == Cult.NEUTRAL) {
+            node.setStatus(Cult.BLUE);
+            node.setNextStatus(Cult.BLUE);
             world.placed();
             world.repaint();
           }
@@ -152,7 +152,7 @@ public class World extends JPanel {
       @Override
       public void run() {
         for (Node node : nodes) {
-          if (node.getStatus() != Color.LIGHT_GRAY) {
+          if (node.getStatus() != Cult.NEUTRAL) {
             node.startConverting();
           }
         }
