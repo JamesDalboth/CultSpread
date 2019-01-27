@@ -1,3 +1,5 @@
+package main.java;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -18,8 +20,8 @@ public class Node extends JComponent {
   private double infidelity;
   private double charisma;
   private int rewardsRate;
-  private char status;
-
+  private Color status;
+  
   public Node(int x, int y) {
     this.x = x;
     this.y = y;
@@ -27,11 +29,12 @@ public class Node extends JComponent {
 
     this.connections = new ArrayList<Node>();
     this.valid_connect = new ArrayList<Boolean>();
-   
+
+    this.connections = new ArrayList<>();
     this.infidelity = 0.5;
     this.charisma = 0.5;
     this.rewardsRate = 0;
-    this.status = 'N';
+    this.status = Color.LIGHT_GRAY;
   }
 
   public boolean isAlive(){
@@ -58,9 +61,6 @@ public class Node extends JComponent {
     }
   }
 
-  public void removeConnection(Node connection) {
-    (this.connections).remove(connection);
-  }
 
   public static void unlink(Node n1, Node n2) {
     n1.addConnection(n2);
@@ -77,12 +77,13 @@ public class Node extends JComponent {
     n2.removeConnection(n1);
   }
 
-  public void disableNode(){
-    this.alive = false;
-    for(int i = 0; i<(this.connections).size(); i++){
-      disableLink(this, connections.get(i));
-    }
-    
+  public void disableNode() {
+      this.alive = false;
+      for (int i = 0; i < (this.connections).size(); i++) {
+          disableLink(this, connections.get(i));
+      }
+  }
+
   public static void convert(Node n1, Node n2) {
       n2.tryConversion(n1);
   }
@@ -102,7 +103,7 @@ public class Node extends JComponent {
       return this.charisma;
   }
 
-  public char getStatus() {
+  public Color getStatus() {
       return this.status;
   }
 
@@ -110,9 +111,9 @@ public class Node extends JComponent {
   public void paint(Graphics g) {
     super.paint(g);
 
-    g.setColor(Color.BLACK);
+    g.setColor(status);
 
-    g.drawArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
+    g.fillArc(x - WIDTH/2, y - WIDTH/2, WIDTH, WIDTH, 0, 360);
 
     for (Node node : connections) {
       g.drawLine(this.x, this.y, node.x, node.y);
