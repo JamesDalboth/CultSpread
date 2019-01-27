@@ -1,5 +1,7 @@
 package main.java;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import main.java.Node;
 
 import java.awt.Color;
@@ -40,6 +42,53 @@ public class Application extends JFrame {
       nodes = new ArrayList<Node>();
 
       nodegen(nodes);
+
+      boolean search = true;
+      int i = 0;
+
+      while (search) {
+        Random random = new Random();
+        i = random.nextInt(nodes.size());
+        if(nodes.get(i).isAlive()) {
+          search = false;
+        }
+      }
+
+      nodes.get(i).setNextStatus(Color.BLUE);
+
+      search = true;
+
+      while (search) {
+        Random random = new Random();
+        i = random.nextInt(nodes.size());
+        if(nodes.get(i).isAlive()) {
+          search = false;
+        }
+      }
+
+      nodes.get(i).setNextStatus(Color.RED);
+
+      Timer time = new Timer();
+
+      final World world = this;
+
+      time.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+
+          for (Node node : nodes) {
+            if (node.getStatus() != Color.LIGHT_GRAY) {
+              node.startConverting();
+            }
+          }
+
+          for (Node node : nodes) {
+            node.setStatus(node.getNextStatus());
+          }
+
+          world.repaint();
+        }
+      }, 1000, 1000);
     }
 
     @Override
