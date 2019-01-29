@@ -61,13 +61,19 @@ public class Node extends JComponent {
   }
 
   public void startConverting() {
-    Random random = new Random();
-    int i = random.nextInt(connections.size());
-    Node node = connections.get(i);
-    node.tryConversion(this);
     if (status == Cult.BLUE) {
       World.REWARD_TOKENS += this.rewardsRate * 0.05;
     }
+
+    Random random = new Random();
+    int i = random.nextInt(connections.size());
+    if (i == 0) {
+      return;
+    }
+
+    Node node = connections.get(i);
+    node.tryConversion(this);
+
     World.redrawLabel();
   }
 

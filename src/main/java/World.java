@@ -16,10 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 public class World extends JPanel {
-  public final static int W_GRIDCOUNT = Application.WIDTH / 20;
-  public final static int H_GRIDCOUNT = Application.HEIGHT / 20;
-  public static final int SPARSENESS = 300;
-  public static final int NODE_SPARESNESS = 200;
+  public final static int W_GRIDCOUNT = Application.WIDTH / (2 * Node.WIDTH) - 1;
+  public final static int H_GRIDCOUNT = Application.HEIGHT / (2 * Node.WIDTH) - 1;
+  public static final int SPARSENESS = 0;
+  public static final int NODE_SPARESNESS = 0;
   public static final int LABEL_SPACE = 100;
   public static double REWARD_TOKENS = 500;
 
@@ -40,7 +40,7 @@ public class World extends JPanel {
 
     nodes = new ArrayList<Node>();
 
-    nodegen(nodes);
+    mapGeneration(nodes);
 
     // Pick random enemy pieces
     pickEnemyPiece();
@@ -241,96 +241,60 @@ public class World extends JPanel {
   }
 
   //Creating all possible nodes and their connections
-  private void nodegen(List<Node> nodes) {
+  private void mapGeneration(List<Node> nodes) {
+    gridInit(nodes);
 
-    ////////////////////////////////////////////////////////////////////////////
-    for (int j = 0; j < (H_GRIDCOUNT / 2) - 1; j++) {
+    createConnections(nodes);
 
-      //Create first node in line 1
-      nodes.add(new Node(10, 10 + 40 * j));
-      int last = nodes.size() - 1;
-      if (last - 1 >= 0) {
-        if (last - 16 >= 0) {
-          Node.link(nodes.get(last), nodes.get(last - 16));
-          if (last - 33 >= 0) {
-            Node.link(nodes.get(last), nodes.get(last - 33));
-          }
-        }
+    makeSpare(nodes);
+  }
+
+  private void createConnections(List<Node> nodes) {
+    //createHorizontalConnections(nodes);
+    createDiagonalConnections(nodes);
+  }
+
+  private void createDiagonalConnections(List<Node> nodes) {
+    for (int i = 0; i < W_GRIDCOUNT * (H_GRIDCOUNT - 1) * 2 + W_GRIDCOUNT; i++) {
+      if (i % (W_GRIDCOUNT * 2) < W_GRIDCOUNT) {
+        Node.link(nodes.get(i), nodes.get(i + W_GRIDCOUNT));
+      } else if ((i + 1) % W_GRIDCOUNT != 0){
+        Node.link(nodes.get(i), nodes.get(i + W_GRIDCOUNT + 1));
       }
-
-      //Create the middle of the nodes in the rest of the lines
-      for (int i = 1; i < (W_GRIDCOUNT / 3); i++) {
-        nodes.add(new Node(10 + 60 * i, 10 + 40 * j));
-        last = nodes.size() - 1;
-        if (last - 1 >= 0) {
-          Node.link(nodes.get(last), nodes.get(last - 1));
-          if (last - 16 >= 0) {
-            Node.link(nodes.get(last), nodes.get(last - 16));
-            if (last - 17 >= 0) {
-              Node.link(nodes.get(last), nodes.get(last - 17));
-              if (last - 33 >= 0) {
-                Node.link(nodes.get(last), nodes.get(last - 33));
-              }
-            }
-          }
-        }
-      }
-
-      //Create the last node in Line 1
-      nodes.add(new Node(10 + 60 * (W_GRIDCOUNT / 3), 10 + 40 * j));
-      last = nodes.size() - 1;
-      if (last - 1 >= 0) {
-        Node.link(nodes.get(last), nodes.get(last - 1));
-        if (last - 17 >= 0) {
-          Node.link(nodes.get(last), nodes.get(last - 17));
-          if (last - 33 >= 0) {
-            Node.link(nodes.get(last), nodes.get(last - 33));
-          }
-        }
-      }
-
-      //Create first node in line 2
-      nodes.add(new Node(40, 30 + 40 * j));
-      last = nodes.size() - 1;
-      if (last - 1 >= 0) {
-        if (last - 16 >= 0) {
-          Node.link(nodes.get(last), nodes.get(last - 16));
-          if (last - 17 >= 0) {
-            Node.link(nodes.get(last), nodes.get(last - 17));
-            if (last - 33 >= 0) {
-              Node.link(nodes.get(last), nodes.get(last - 33));
-            }
-          }
-        }
-      }
-
-      for (int i = 1; i < (W_GRIDCOUNT / 3); i++) {
-        nodes.add(new Node(40 + 60 * i, 30 + 40 * j));
-        last = nodes.size() - 1;
-        if (last - 1 >= 0) {
-          Node.link(nodes.get(last), nodes.get(last - 1));
-          if (last - 16 >= 0) {
-            Node.link(nodes.get(last), nodes.get(last - 16));
-            if (last - 17 >= 0) {
-              Node.link(nodes.get(last), nodes.get(last - 17));
-              if (last - 33 >= 0) {
-                Node.link(nodes.get(last), nodes.get(last - 33));
-              }
-            }
-          }
-        }
-      }
-
     }
+  }
 
+  private void createHorizontalConnections(List<Node> nodes) {
+    for (int i = 1; i < nodes.size() - 1; i++) {
+      if (i % W_GRIDCOUNT != 0) {
+        Node.link(nodes.get(i), nodes.get(i - 1));
+      }
+    }
+  }
+
+  private void gridInit(List<Node> nodes) {
+    for (int i = 0; i < H_GRIDCOUNT; i++) {
+      for (int j = 0; j < W_GRIDCOUNT; j++) {
+        float x = (j * 2) + 3/2;
+        float y = (i * 2) + 1/2;
+        nodes.add(new Node(Math.round(x * Node.WIDTH),Math.round(y * Node.WIDTH)));
+      }
+
+      for (int j = 0; j < W_GRIDCOUNT; j++) {
+        float x = (j * 2) + 5/2;
+        float y = (i * 2) + 3/2;
+        nodes.add(new Node(Math.round(x * Node.WIDTH),Math.round(y * Node.WIDTH)));
+      }
+    }
+  }
+
+  private void makeSpare(List<Node> nodes) {
     for (int i = 0; i < NODE_SPARESNESS /*TEST VARIABLE*/; i++) {
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
       (nodes.get(n)).kill();
       nodes.remove(n);
     }
-
-    /////////////////////////////////////////////////////////////////////////////
 
     for (int i = 0; i < SPARSENESS /*TEST VARIABLE*/; i++) {
       Random rand = new Random();
