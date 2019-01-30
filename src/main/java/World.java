@@ -8,8 +8,8 @@ import java.util.*;
 public class World extends JPanel {
   private final static int W_GRIDCOUNT = Application.WIDTH / (2 * Node.WIDTH) - 1;
   private final static int H_GRIDCOUNT = Application.HEIGHT / (2 * Node.WIDTH) - 1;
-  private static final int SPARSENESS = 200;
-  private static final int NODE_SPARESNESS = 300;
+  private static final double SPARSENESS = 1;
+  private static final double NODE_SPARESNESS = 0.20;
 
   static final int LABEL_SPACE = 100;
 
@@ -33,7 +33,6 @@ public class World extends JPanel {
     mapGeneration(nodes);
 
     // Pick random enemy pieces
-    pickEnemyPiece();
     pickEnemyPiece();
     pickEnemyPiece();
 
@@ -89,7 +88,7 @@ public class World extends JPanel {
         createPopUpOption(world, node, selectReward, "Holy hand grenade (200 points)",
           errorMessage, "Holy hand grenade Successful", Upgrade.BOMB);
         createPopUpOption(world, node, selectReward, "Martyr (-300 points)", errorMessage,
-          "Martyr Successful", Upgrade.MATYR);
+          "Martyr Successful", Upgrade.MARTYR);
         createPopUpOption(world, node, selectReward, "Convert node (1 converion point)",
           errorMessage, "Convetion Successful", Upgrade.CONVERT);
         selectReward.show(e.getComponent(), e.getX(), e.getY());
@@ -137,15 +136,12 @@ public class World extends JPanel {
   private void enemyBomb() {
     Random random = new Random();
 
-    int n = random.nextInt(60);
-    if (n < 12) {
-
-      Cult cult = Cult.RED;
-
-      Node node = getNodeOfType(cult);
-
+    for (Node node : nodes) {
       if (node.getStatus() == Cult.RED) {
-        node.bomb();
+        int n = random.nextInt(100);
+        if (n == 1) {
+          node.bomb();
+        }
       }
     }
   }
@@ -237,14 +233,14 @@ public class World extends JPanel {
   }
 
   private void makeSparse(List<Node> nodes) {
-    for (int i = 0; i < NODE_SPARESNESS; i++) {
+    for (int i = 0; i < NODE_SPARESNESS * nodes.size(); i++) {
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
       (nodes.get(n)).kill();
       nodes.remove(n);
     }
 
-    for (int i = 0; i < SPARSENESS; i++) {
+    for (int i = 0; i < SPARSENESS * nodes.size(); i++) {
       Random rand = new Random();
       int n = rand.nextInt(nodes.size());
       int s_con = ((nodes.get(n)).connections).size();

@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Node extends JComponent {
 
-  public final static int WIDTH = 20;
+  public final static int WIDTH = 30;
   protected List<Node> connections;
   private int x;
   private int y;
@@ -162,7 +162,6 @@ public class Node extends JComponent {
   public void setNextStatus(Cult nextStatus) {
     this.nextStatus = nextStatus;
   }
-
 
   public void kill() {
     Node node;
