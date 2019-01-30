@@ -3,5 +3,6 @@ public enum Upgrade {
   INFIDELITY,
   REWARDS,
   BOMB,
-  CONVERT, MATYR
+  CONVERT,
+  MARTYR
 }

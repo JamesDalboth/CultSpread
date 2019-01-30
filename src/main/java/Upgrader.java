@@ -16,7 +16,7 @@ public class Upgrader {
       return rewardsUpgrade(node);
     } else if (upgrade == Upgrade.BOMB) {
       return bombUpgrade(node);
-    } else if (upgrade == Upgrade.MATYR) {
+    } else if (upgrade == Upgrade.MARTYR) {
       return matyrUpgrade(node);
     } else {
       return false;
