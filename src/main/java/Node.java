@@ -1,31 +1,38 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Node extends JComponent {
 
-  public final static int WIDTH = 30;
+  public final static int WIDTH = 50;
   protected List<Node> connections;
   private int x;
   private int y;
-  private double infidelity;
-  private double charisma;
-  private int rewardsRate;
+  private final static double INFIDELITY = 0.5;
+  private final static double CHARISMA = 0.5;
+  private final static double REWARDS = 1;
   private Cult status;
   private Cult nextStatus;
 
-  public Node(int x, int y) {
+  private Specialty specialty = Specialty.NONE;
+
+  private World world;
+
+  public Node(int x, int y, World world) {
     this.x = x;
     this.y = y;
 
+    this.world = world;
+
     this.connections = new ArrayList<Node>();
 
-    this.infidelity = 0.5;
-    this.charisma = 0.5;
-    this.rewardsRate = 0;
     this.status = Cult.NEUTRAL;
     this.nextStatus = this.status;
   }
@@ -60,7 +67,13 @@ public class Node extends JComponent {
 
   public void startConverting() {
     if (status == Cult.BLUE) {
-      World.REWARD_TOKENS += this.rewardsRate * 0.05;
+      double rewards = REWARDS;
+
+      if (specialty == Specialty.CASH) {
+        rewards += 1;
+      }
+
+      World.REWARD_TOKENS += rewards * 0.05;
     }
 
     Random random = new Random();
@@ -72,18 +85,26 @@ public class Node extends JComponent {
     Node node = connections.get(i);
     node.tryConversion(this);
 
-    World.redrawLabel();
+    world.repaint();
   }
 
   public void tryConversion(Node attacker) {
-    double probability = ((this.infidelity) * (attacker.getCharisma())) * 100;
+    double infidelity = INFIDELITY;
+    double charisma = CHARISMA;
+
+    switch (specialty) {
+      case PRISONER:
+        infidelity -= 0.3;
+        break;
+      case PRIEST:
+        charisma += 0.3;
+        break;
+    }
+    double probability = (infidelity * charisma) * 100;
     Random rand = new Random();
     int n = rand.nextInt(100) + 1;
     if (n <= probability) {
       this.nextStatus = attacker.getStatus();
-      this.infidelity = 0.3;
-      this.charisma = 0.6;
-      this.rewardsRate = 1;
     }
   }
 
@@ -103,9 +124,6 @@ public class Node extends JComponent {
     }
   }
 
-  public double getCharisma() {
-    return this.charisma;
-  }
 
   public Cult getStatus() {
     return this.status;
@@ -126,30 +144,62 @@ public class Node extends JComponent {
         g.setColor(Color.BLUE);
         break;
       case NEUTRAL:
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.WHITE);
         break;
     }
+
     g.fillArc(x - WIDTH / 2, y - WIDTH / 2 + World.LABEL_SPACE, WIDTH, WIDTH, 0, 360);
+
+    g.setColor(Color.BLACK);
+    g.drawArc(x - WIDTH / 2, y - WIDTH / 2 + World.LABEL_SPACE, WIDTH, WIDTH, 0, 360);
+
+    g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+
+    switch (specialty) {
+      case PRIEST:
+        World.drawString(g, "S",x, y + World.LABEL_SPACE + 10);
+        break;
+      case PRISONER:
+        World.drawString(g, "W",x, y + World.LABEL_SPACE + 10);
+        break;
+      case CASH:
+        World.drawString(g, "C",x, y + World.LABEL_SPACE + 10);
+        break;
+    }
   }
 
   public void paintConnection(Graphics g) {
     super.paint(g);
 
-    switch (status) {
-      case RED:
-        g.setColor(Color.RED);
-        break;
-      case BLUE:
-        g.setColor(Color.BLUE);
-        break;
-      case NEUTRAL:
-        g.setColor(Color.LIGHT_GRAY);
-        break;
-    }
+    Graphics2D g2 = (Graphics2D) g;
+
+    g2.setColor(Color.BLACK);
+    g2.setStroke(new BasicStroke(5));
 
     for (Node node : connections) {
       int i = connections.indexOf(node);
-      g.drawLine(this.x, this.y + World.LABEL_SPACE, (node.x - this.x) / 2 + this.x,
+      g2.drawLine(this.x, this.y + World.LABEL_SPACE, (node.x - this.x) / 2 + this.x,
+        (node.y - this.y) / 2 + this.y + World.LABEL_SPACE
+      );
+    }
+
+    switch (status) {
+      case RED:
+        g2.setColor(Color.RED);
+        break;
+      case BLUE:
+        g2.setColor(Color.BLUE);
+        break;
+      case NEUTRAL:
+        g2.setColor(Color.BLACK);
+        break;
+    }
+
+    g2.setStroke(new BasicStroke(3));
+
+    for (Node node : connections) {
+      int i = connections.indexOf(node);
+      g2.drawLine(this.x, this.y + World.LABEL_SPACE, (node.x - this.x) / 2 + this.x,
         (node.y - this.y) / 2 + this.y + World.LABEL_SPACE
       );
     }
@@ -178,23 +228,11 @@ public class Node extends JComponent {
     return false;
   }
 
-  public void setRewardsRate(int rewardsRate) {
-    this.rewardsRate = rewardsRate;
+  public Specialty getSpecialty() {
+    return specialty;
   }
 
-  public int getRewardsRate() {
-    return rewardsRate;
-  }
-
-  public double getInfidelity() {
-    return infidelity;
-  }
-
-  public void setInfidelity(double infidelity) {
-    this.infidelity = infidelity;
-  }
-
-  public void setCharisma(double charisma) {
-    this.charisma = charisma;
+  public void setSpecialty(Specialty specialty) {
+    this.specialty = specialty;
   }
 }

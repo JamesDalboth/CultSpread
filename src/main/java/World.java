@@ -24,8 +24,6 @@ public class World extends JPanel {
   private List<Node> nodes;
 
   public World() {
-    setUpLabels();
-
     repaint();
 
     nodes = new ArrayList<Node>();
@@ -61,6 +59,7 @@ public class World extends JPanel {
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
           paused = !paused;
+          repaint();
         }
       }
 
@@ -102,6 +101,7 @@ public class World extends JPanel {
     selectReward.add(new JMenuItem(new AbstractAction(text) {
       public void actionPerformed(ActionEvent e) {
         if (Upgrader.attemptUpgrade(node, type)) {
+          repaint();
           JOptionPane.showMessageDialog(world, successMessage);
         } else {
           JOptionPane.showMessageDialog(world, errorMessage);
@@ -188,13 +188,13 @@ public class World extends JPanel {
       for (int j = 0; j < W_GRIDCOUNT; j++) {
         float x = (j * 2) + 3 / 2;
         float y = (i * 2) + 1 / 2;
-        nodes.add(new Node(Math.round(x * Node.WIDTH), Math.round(y * Node.WIDTH)));
+        nodes.add(new Node(Math.round(x * Node.WIDTH), Math.round(y * Node.WIDTH), this));
       }
 
       for (int j = 0; j < W_GRIDCOUNT; j++) {
         float x = (j * 2) + 5 / 2;
         float y = (i * 2) + 3 / 2;
-        nodes.add(new Node(Math.round(x * Node.WIDTH), Math.round(y * Node.WIDTH)));
+        nodes.add(new Node(Math.round(x * Node.WIDTH), Math.round(y * Node.WIDTH), this));
       }
     }
   }
@@ -257,7 +257,7 @@ public class World extends JPanel {
   public void paintComponent(Graphics g) {
     super.paintComponents(g);
 
-    g.setColor(Color.BLACK);
+    g.setColor(Color.WHITE);
     g.fillRect(0, 0, Application.WIDTH, Application.HEIGHT + LABEL_SPACE);
 
     for (Node node : nodes) {
@@ -268,31 +268,25 @@ public class World extends JPanel {
       node.paintNodes(g);
     }
 
+    g.setColor(Color.BLACK);
+
+    FontMetrics fm = g.getFontMetrics();
+
+    g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+
+    drawString(g, "Cult Members = " + Math.round(REWARD_TOKENS), Application.WIDTH / 2, 20);
+    drawString(g, "Conversion Points = " + CONVERSION_TOKENS, Application.WIDTH / 2, 40);
+
     if (paused) {
-      g.setColor(Color.WHITE);
-
-      g.drawString("PAUSED", Application.WIDTH / 2, 50);
+      drawString(g,"PAUSED", Application.WIDTH / 2, Application.HEIGHT + 20);
     }
-
-    reward_label.repaint();
   }
 
-  public static void redrawLabel() {
-    reward_label.setText("Reward Tokens = " + Math.round(REWARD_TOKENS));
-    conversion_label.setText("Conversion tokens = " + CONVERSION_TOKENS);
-  }
+  public static void drawString(Graphics g, String string, int x, int y) {
+    FontMetrics fm = g.getFontMetrics();
+    int width = fm.stringWidth(string);
 
-  private void setUpLabels() {
-    reward_label = new JLabel();
-    reward_label.setText("Reward tokens = " + REWARD_TOKENS);
-    reward_label.setForeground(Color.WHITE);
-
-    conversion_label = new JLabel();
-    conversion_label.setText("Conversion tokens = " + CONVERSION_TOKENS);
-    conversion_label.setForeground(Color.WHITE);
-
-    add(reward_label);
-    add(conversion_label);
+    g.drawString(string, x - width/2, y);
   }
 
   private void mouseListener() {
