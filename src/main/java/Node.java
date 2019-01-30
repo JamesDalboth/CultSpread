@@ -1,21 +1,16 @@
-import java.awt.Color;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import javax.swing.JComponent;
 
 public class Node extends JComponent {
 
   public final static int WIDTH = 20;
-
+  protected List<Node> connections;
   private int x;
   private int y;
-
-
-  protected List<Node> connections;
-
   private double infidelity;
   private double charisma;
   private int rewardsRate;
@@ -35,22 +30,13 @@ public class Node extends JComponent {
     this.nextStatus = this.status;
   }
 
-  public void addConnection(Node connection) {
-    connections.add(connection);
-  }
-
-  public void removeConnection(Node connection) {
-    connections.remove(connection);
-  }
-
   public static void link(Node n1, Node n2) {
     n1.addConnection(n2);
     n2.addConnection(n1);
   }
 
   public static void disableLink(Node n1, Node n2) {
-    //Delete connection if both nodes have more than 1 connection
-    if(n1.connections.size() > 1 && n2.connections.size() > 1) {
+    if (n1.connections.size() > 1 && n2.connections.size() > 1) {
       removeLink(n1, n2);
     }
   }
@@ -58,6 +44,18 @@ public class Node extends JComponent {
   private static void removeLink(Node n1, Node n2) {
     n1.removeConnection(n2);
     n2.removeConnection(n1);
+  }
+
+  public static double distance(int x1, int y1, int x2, int y2) {
+    return Math.sqrt(Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0));
+  }
+
+  public void addConnection(Node connection) {
+    connections.add(connection);
+  }
+
+  public void removeConnection(Node connection) {
+    connections.remove(connection);
   }
 
   public void startConverting() {
@@ -86,6 +84,22 @@ public class Node extends JComponent {
       this.infidelity = 0.3;
       this.charisma = 0.6;
       this.rewardsRate = 1;
+    }
+  }
+
+
+  public void matyr() {
+    this.setNextStatus(Cult.RED);
+    for (Node connection : this.connections) {
+      connection.setNextStatus(Cult.RED);
+      connection.setStatus(Cult.RED);
+    }
+  }
+
+  public void bomb() {
+    for (Node connection : this.connections) {
+      connection.setNextStatus(this.getStatus());
+      connection.setStatus(this.getStatus());
     }
   }
 
@@ -136,7 +150,7 @@ public class Node extends JComponent {
     for (Node node : connections) {
       int i = connections.indexOf(node);
       g.drawLine(this.x, this.y + World.LABEL_SPACE, (node.x - this.x) / 2 + this.x,
-          (node.y - this.y) / 2 + this.y + World.LABEL_SPACE
+        (node.y - this.y) / 2 + this.y + World.LABEL_SPACE
       );
     }
   }
@@ -149,71 +163,6 @@ public class Node extends JComponent {
     this.nextStatus = nextStatus;
   }
 
-  public boolean attemptUpgrade(String upgrade) {
-    if (this.status == Cult.BLUE) {
-      if (upgrade == "Charisma") {
-        if (World.REWARD_TOKENS >= 50) {
-          this.charisma = this.charisma + 0.1;
-          World.REWARD_TOKENS -= 50;
-          World.redrawLabel();
-          return true;
-        } else {
-          return false;
-        }
-      } else if (upgrade == "Infidelity") {
-        if (World.REWARD_TOKENS >= 50) {
-          this.infidelity = this.infidelity - 0.3;
-          World.REWARD_TOKENS -= 50;
-          World.redrawLabel();
-          return true;
-        } else {
-          return false;
-        }
-      } else if (upgrade == "Reward Rate") {
-        if (World.REWARD_TOKENS >= 50) {
-          this.rewardsRate = this.rewardsRate + 2;
-          World.REWARD_TOKENS -= 50;
-          World.redrawLabel();
-          return true;
-        } else {
-          return false;
-        }
-      } else if (upgrade == "bomb") {
-        if (World.REWARD_TOKENS >= 200) {
-          bomb();
-          World.REWARD_TOKENS -= 200;
-          World.redrawLabel();
-          return true;
-        } else {
-          return false;
-        }
-      } else if (upgrade == "matyr") {
-        matyr();
-        World.REWARD_TOKENS += 300;
-        World.redrawLabel();
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  private void matyr() {
-    this.setNextStatus(Cult.RED);
-    for (Node node : connections) {
-      node.setNextStatus(Cult.RED);
-      node.setStatus(Cult.RED);
-    }
-  }
-
-  public void bomb() {
-    for (Node node : connections) {
-      node.setNextStatus(getStatus());
-      node.setStatus(getStatus());
-    }
-  }
 
   public void kill() {
     Node node;
@@ -224,13 +173,29 @@ public class Node extends JComponent {
   }
 
   public boolean isHit(MouseEvent e) {
-    if (distance(e.getX(), e.getY(), this.x, this.y + World.LABEL_SPACE) < WIDTH/2) {
+    if (distance(e.getX(), e.getY(), this.x, this.y + World.LABEL_SPACE) < WIDTH / 2) {
       return true;
     }
     return false;
   }
 
-  public static double distance(int x1, int y1, int x2, int y2) {
-    return Math.sqrt(Math.pow(x1 - x2 , 2.0) + Math.pow(y1 - y2, 2.0));
+  public void setRewardsRate(int rewardsRate) {
+    this.rewardsRate = rewardsRate;
+  }
+
+  public int getRewardsRate() {
+    return rewardsRate;
+  }
+
+  public double getInfidelity() {
+    return infidelity;
+  }
+
+  public void setInfidelity(double infidelity) {
+    this.infidelity = infidelity;
+  }
+
+  public void setCharisma(double charisma) {
+    this.charisma = charisma;
   }
 }
