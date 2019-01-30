@@ -8,7 +8,7 @@ import java.util.*;
 public class World extends JPanel {
   private final static int W_GRIDCOUNT = Application.WIDTH / (2 * Node.WIDTH) - 1;
   private final static int H_GRIDCOUNT = Application.HEIGHT / (2 * Node.WIDTH) - 1;
-  private static final double SPARSENESS = 0.20;
+  private static final double SPARSENESS = 1;
   private static final double NODE_SPARESNESS = 0.20;
 
   static final int LABEL_SPACE = 100;
@@ -33,7 +33,6 @@ public class World extends JPanel {
     mapGeneration(nodes);
 
     // Pick random enemy pieces
-    pickEnemyPiece();
     pickEnemyPiece();
     pickEnemyPiece();
 
@@ -137,15 +136,12 @@ public class World extends JPanel {
   private void enemyBomb() {
     Random random = new Random();
 
-    int n = random.nextInt(60);
-    if (n < 12) {
-
-      Cult cult = Cult.RED;
-
-      Node node = getNodeOfType(cult);
-
+    for (Node node : nodes) {
       if (node.getStatus() == Cult.RED) {
-        node.bomb();
+        int n = random.nextInt(100);
+        if (n == 1) {
+          node.bomb();
+        }
       }
     }
   }

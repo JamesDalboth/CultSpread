@@ -163,7 +163,6 @@ public class Node extends JComponent {
     this.nextStatus = nextStatus;
   }
 
-
   public void kill() {
     Node node;
     while (connections.size() > 0) {
